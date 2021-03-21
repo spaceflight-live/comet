@@ -4,7 +4,12 @@ import LaunchInfo from './launchinfo';
 
 export default function Landing() {
   return (
-    <div className="bg-black min-h-screen min-w-screen ">
+    <div
+      className="bg-black min-h-screen min-w-screen"
+      style={{
+        textShadow: '0px 8px 13px rgba(0,0,0,0.2), 0px 18px 23px rgba(0,0,0,0.2)',
+      }}
+    >
       <Image
         className="opacity-50 z-0"
         src="https://constellation.spaceflight.live/soyuz-blurred.jpg"
