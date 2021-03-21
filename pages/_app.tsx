@@ -1,4 +1,5 @@
 import { createGlobalStyle, ThemeProvider } from "styled-components";
+import 'tailwindcss/tailwind.css'
 
 const GlobalStyle = createGlobalStyle`
   body {
