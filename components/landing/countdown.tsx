@@ -1,3 +1,22 @@
 export default function Countdown() {
-  return <span className="text-gradient font-bold text-4xl">57 days or smtn</span>;
+  return (
+    <div className="flex">
+      <div className="m-5 text-center">
+        <span className="font-bold text-6xl">01</span>
+        <span className="font-bold text-2xl block">Days</span>
+      </div>
+      <div className="m-5 text-center">
+        <span className="font-bold text-6xl">12</span>
+        <span className="font-bold text-2xl block">Hours</span>
+      </div>
+      <div className="m-5 text-center">
+        <span className="font-bold text-6xl">34</span>
+        <span className="font-bold text-2xl block">Minutes</span>
+      </div>
+      <div className="m-5 text-center">
+        <span className="font-bold text-6xl">20</span>
+        <span className="font-bold text-2xl block">Seconds</span>
+      </div>
+    </div>
+  );
 }

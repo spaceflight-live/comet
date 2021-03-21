@@ -4,7 +4,7 @@ import Landing from '../components/landing/landing';
 
 export default function Home() {
   return (
-    <div className="root font-inter">
+    <div className="root font-inter text-white">
       <Head>
         <title>Spaceflight Live</title>
         <link rel="preconnect" href="https://fonts.gstatic.com" />
