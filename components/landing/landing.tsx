@@ -15,7 +15,9 @@ export default function Landing() {
         src="https://constellation.spaceflight.live/soyuz-blurred.jpg"
         alt=""
         layout="fill"
+        draggable="false"
       />
+
       <div className="flex flex-col min-h-screen">
         <div className="flex-1" />
         <div className="flex">
