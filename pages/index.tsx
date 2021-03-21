@@ -15,16 +15,10 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
+      <main className="h-screen w-screen flex flex-col">
         <Landing />
         <NavBar />
       </main>
-
-      <style jsx>{`
-        main {
-          width: 100%;
-        }
-      `}</style>
 
       <style jsx global>{`
         .text-gradient {
