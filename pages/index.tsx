@@ -4,7 +4,7 @@ import Landing from '../components/landing/landing';
 
 export default function Home() {
   return (
-    <div className="root">
+    <div className="root font-inter">
       <Head>
         <title>Spaceflight Live</title>
         <link rel="preconnect" href="https://fonts.gstatic.com" />
@@ -20,19 +20,13 @@ export default function Home() {
         <NavBar />
       </main>
 
-      <style jsx>
-        {`
-          main {
-            width: 100%;
-          }
-        `}
-      </style>
+      <style jsx>{`
+        main {
+          width: 100%;
+        }
+      `}</style>
 
       <style jsx global>{`
-         {
-          /* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap'); */
-        }
-
         .text-gradient {
           background: -webkit-linear-gradient(30deg, #22c0d6, #89e3be);
           -webkit-background-clip: text;
