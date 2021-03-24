@@ -1,4 +1,6 @@
-export default function Countdown() {
+import { FC } from 'react';
+
+const Countdown: FC = () => {
   return (
     <div className="flex z-10 m-auto">
       <div className="m-5 text-center">
@@ -19,4 +21,6 @@ export default function Countdown() {
       </div>
     </div>
   );
-}
+};
+
+export default Countdown;
