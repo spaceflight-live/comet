@@ -1,6 +1,6 @@
 export default function Countdown() {
   return (
-    <div className="flex">
+    <div className="flex z-10 m-auto">
       <div className="m-5 text-center">
         <span className="font-bold text-6xl">01</span>
         <span className="font-bold text-2xl block">Days</span>

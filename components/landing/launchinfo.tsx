@@ -1,30 +1,36 @@
-export default function LaunchInfo() {
+import { FC } from 'react';
+
+const NextLaunch: FC = () => {
   return (
-    <div className="text-left text-white">
-      <span className="text-gradient font-bold text-4xl mb-3 block">Next Launch</span>
+    <div className="text-left text-white z-10 m-auto">
+      <span className="font-bold text-4xl mb-3 block text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-green-400">
+        Next Launch
+      </span>
       <span className="block text-3xl font-bold">CAS500-1</span>
       <span className="block text-xl">Roscosmos &bull; Soyuz-2</span>
       <div className="block">
         <svg
-          className="inline text-gradient"
+          className="inline from-blue-400 to-green-400"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
           height="24"
           viewBox="0 0 24 24"
         >
           <defs>
-            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%" gradientTransform="rotate(30)">
-              <stop offset="0%" style={{ stopColor: '#22c0d6; stop-opacity:1' }} />
-              <stop offset="100%" style={{ stopColor: '#89e3be; stop-opacity:1' }} />
+            <linearGradient x1="50%" y1="92.034%" x2="50%" y2="7.2%" id="a">
+              <stop offset="0%" stopColor="currentColor" />
+              <stop stopOpacity="0" offset="100%" stopColor="white" />
             </linearGradient>
           </defs>
           <path
-            fill="url(#gradient)"
+            fill="currentColor"
             d="M12 0c-4.198 0-8 3.403-8 7.602 0 4.198 3.469 9.21 8 16.398 4.531-7.188 8-12.2 8-16.398 0-4.199-3.801-7.602-8-7.602zm0 11c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"
           />
         </svg>
-        <span>&nbsp;LC-31/6, Baikonur Cosmodrome, Kazakhstan</span>
+        <span>LC-31/6, Baikonur Cosmodrome, Kazakhstan</span>
       </div>
     </div>
   );
-}
+};
+
+export default NextLaunch;

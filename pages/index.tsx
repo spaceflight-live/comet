@@ -12,34 +12,17 @@ export default function Home() {
           href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
           rel="stylesheet"
         />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="h-screen w-screen flex flex-col">
+      <div className="h-screen w-screen flex flex-col">
         <Landing />
         <NavBar />
-      </main>
-
-      <style jsx global>{`
-        .text-gradient {
-          background: -webkit-linear-gradient(30deg, #22c0d6, #89e3be);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-
-        html,
-        body {
-          padding: 0;
-          margin: 0;
-          width: 100%;
-          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans,
-            Droid Sans, Helvetica Neue, sans-serif;
-        }
-
-        * {
-          box-sizing: border-box;
-        }
-      `}</style>
+      </div>
+      {new Array(100).fill('space').map((a, i) => (
+        <p className="text-black" key={i}>
+          {a} - {i}
+        </p>
+      ))}
     </div>
   );
 }
