@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 const Countdown: FC = () => {
   return (
-    <div className="flex z-10 m-auto">
+    <div className="flex z-10 m-auto text-shadow">
       <div className="m-5 text-center">
         <span className="font-bold text-6xl">01</span>
         <span className="font-bold text-2xl block">Days</span>

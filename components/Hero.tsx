@@ -1,4 +1,4 @@
-import Countdown from './countdown';
+import Countdown from './Countdown';
 import { FC } from 'react';
 import NextLaunch from './NextLaunch';
 import Image from 'next/image';

@@ -6,9 +6,9 @@ const NextLaunch: FC = () => {
       <span className="font-bold text-4xl mb-3 block text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-green-400">
         Next Launch
       </span>
-      <span className="block text-3xl font-bold">CAS500-1</span>
-      <span className="block text-xl">Roscosmos &bull; Soyuz-2</span>
-      <div className="block">
+      <span className="block text-3xl font-bold text-shadow">CAS500-1</span>
+      <span className="block text-xl text-shadow">Roscosmos &bull; Soyuz-2</span>
+      <div className="block text-shadow">
         <svg
           className="inline from-blue-400 to-green-400"
           xmlns="http://www.w3.org/2000/svg"
