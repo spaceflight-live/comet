@@ -1,24 +1,49 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 
-const Countdown: FC = () => {
+interface FormattedTime {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
+
+function formatTime(time: number): FormattedTime {
+  const days = Math.floor(time / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((time % (1000 * 60)) / 1000);
+
+  return {
+    days: (String(days).padStart(2, '0') as unknown) as number,
+    hours: (String(hours).padStart(2, '0') as unknown) as number,
+    minutes: (String(minutes).padStart(2, '0') as unknown) as number,
+    seconds: (String(seconds).padStart(2, '0') as unknown) as number,
+  };
+}
+
+type Props = {
+  net: string;
+};
+
+const Countdown: FC<Props> = ({ net }) => {
+  const [time, setTime] = useState<FormattedTime>();
+
+  useEffect(() => {
+    setInterval(() => {
+      setTime(formatTime(new Date(net).getTime() - Date.now()));
+    }, 1000);
+  }, []);
+
+  if (!time) return <></>;
+
   return (
     <div className="flex z-10 m-auto text-shadow">
-      <div className="m-5 text-center">
-        <span className="font-bold text-6xl">01</span>
-        <span className="font-bold text-2xl block">Days</span>
-      </div>
-      <div className="m-5 text-center">
-        <span className="font-bold text-6xl">12</span>
-        <span className="font-bold text-2xl block">Hours</span>
-      </div>
-      <div className="m-5 text-center">
-        <span className="font-bold text-6xl">34</span>
-        <span className="font-bold text-2xl block">Minutes</span>
-      </div>
-      <div className="m-5 text-center">
-        <span className="font-bold text-6xl">20</span>
-        <span className="font-bold text-2xl block">Seconds</span>
-      </div>
+      {Object.keys(time).map((key) => (
+        <div className="m-5 text-center" key={key}>
+          <span className="font-bold text-6xl">{time[key]}</span>
+          <span className="font-bold text-2xl block capitalize">{key}</span>
+        </div>
+      ))}
     </div>
   );
 };

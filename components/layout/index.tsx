@@ -40,10 +40,10 @@ const LayoutWithHero: React.FC<WithChildren> = ({ children }) => {
     <Fragment>
       <div className="h-screen w-screen flex flex-col">
         <Landing />
-        <Header />
+        {/* <Header /> */}
       </div>
       <div className="mx-auto container text-black">{children}</div>
-      <Footer />
+      {/* <Footer /> */}
     </Fragment>
   );
 };

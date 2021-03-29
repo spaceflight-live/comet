@@ -1,13 +1,19 @@
 import { FC } from 'react';
 
-const NextLaunch: FC = () => {
+type Props = {
+  data: any;
+};
+
+const NextLaunch: FC<Props> = ({ data }) => {
   return (
     <div className="text-left text-white z-10 m-auto">
       <span className="font-bold text-4xl mb-3 block text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-green-400">
         Next Launch
       </span>
-      <span className="block text-3xl font-bold text-shadow">CAS500-1</span>
-      <span className="block text-xl text-shadow">Roscosmos &bull; Soyuz-2</span>
+      <span className="block text-3xl font-bold text-shadow">{data.name}</span>
+      <span className="block text-xl text-shadow">
+        {data.vehicle} &bull; {data.pad}
+      </span>
       <div className="block text-shadow">
         <svg
           className="inline from-blue-400 to-green-400"
@@ -27,7 +33,7 @@ const NextLaunch: FC = () => {
             d="M12 0c-4.198 0-8 3.403-8 7.602 0 4.198 3.469 9.21 8 16.398 4.531-7.188 8-12.2 8-16.398 0-4.199-3.801-7.602-8-7.602zm0 11c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"
           />
         </svg>
-        <span>LC-31/6, Baikonur Cosmodrome, Kazakhstan</span>
+        <span>{data.location}</span>
       </div>
     </div>
   );
