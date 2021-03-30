@@ -29,7 +29,7 @@ jobs:
         uses: danielr1996/kubectl-action@1.0.0
         with:
           kubeconfig: ${{ secrets.KUBECONFIG }}
-          args: set image --record deployment/comet-staging comet=ghcr.io/${{ github.repository }}:${{ github.sha }}
+          args: set image --record deployment/comet-staging comet-staging=ghcr.io/${{ github.repository }}:${{ github.sha }}
       - name: Verify deployment
         uses: danielr1996/kubectl-action@1.0.0
         with:
