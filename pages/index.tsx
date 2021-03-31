@@ -1,20 +1,24 @@
+import { STARTER_QUERY } from 'components/Hero';
 import { getLayoutWithHero } from 'components/layout';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { ApolloWithState, createClient } from 'lib/apollo';
+import { GetStaticProps } from 'next';
 
-const HomePage = ({ hero }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  return <>{JSON.stringify(hero)}</>;
+const HomePage = () => {
+  return <></>;
 };
 
-export const getServerSideProps: GetServerSideProps = async function () {
+export const getStaticProps: GetStaticProps = async function () {
+  const client = createClient();
+
+  await client.query({
+    query: STARTER_QUERY,
+  });
+
   return {
-    props: {
+    props: ApolloWithState(client, {
       heroOnly: true,
-      hero: (
-        await fetch(
-          `https://booster.spaceflight.live/?query=query {starter {name net vehicle image_path pad location}}`,
-        ).then((data) => data.json())
-      ).data.starter,
-    },
+    }),
+    revalidate: 1,
   };
 };
 

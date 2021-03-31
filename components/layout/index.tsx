@@ -1,12 +1,10 @@
 import React, { Fragment, PropsWithChildren } from 'react';
 import Head from 'next/head';
 import { NextPage } from 'next';
-import Dynamic from 'next/dynamic';
 
 import Header from './header';
 import Footer from './footer';
-
-const Hero = Dynamic(() => import('../Hero'), { ssr: false });
+import Hero from 'components/Hero';
 
 type WithChildren = { children: React.ReactNode };
 const RootLayout: React.FC<WithChildren> = ({ children }) => {

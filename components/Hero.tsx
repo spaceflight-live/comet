@@ -1,7 +1,11 @@
-import Countdown from './Countdown';
 import { FC } from 'react';
 import NextLaunch from './NextLaunch';
 import Image from 'next/image';
+import gql from 'graphql-tag';
+import { useQuery } from '@apollo/client';
+import Dynamic from 'next/dynamic';
+
+const Countdown = Dynamic(() => import('./Countdown'), { ssr: false });
 
 type Props = {
   name: string;
@@ -12,8 +16,29 @@ type Props = {
   location: string;
 };
 
-const Hero: FC<Props> = (hero) => {
-  if (!hero) return <></>;
+export const STARTER_QUERY = gql`
+  query {
+    starter {
+      name
+      net
+      vehicle
+      image_path
+      pad
+      location
+    }
+  }
+`;
+
+const Hero: FC<Props> = () => {
+  const { error, data, loading } = useQuery(STARTER_QUERY, {
+    fetchPolicy: typeof window == 'undefined' ? 'cache-only' : 'cache-first',
+    nextFetchPolicy: 'cache-first',
+  });
+  if (loading) return <div></div>;
+  if (error) return <p>{error.toString()}</p>;
+  const { starter: hero } = data;
+
+  if (!hero || !Object.keys(hero).length) return <></>;
 
   return (
     <div className="bg-black h-full bg-center bg-cover relative">
