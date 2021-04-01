@@ -1,4 +1,5 @@
-import { STARTER_QUERY } from 'components/Hero';
+import { useQuery } from '@apollo/client';
+import { UPCOMING_LAUNCHES } from 'components/Hero';
 import { getLayoutWithHero } from 'components/layout';
 import { ApolloWithState, createClient } from 'lib/apollo';
 import { useOrbiter } from 'lib/orbiter';
@@ -8,10 +9,18 @@ const HomePage = () => {
   const { listen, unlisten, events } = useOrbiter();
   const [updates, setUpdates] = useState<string>('');
 
-  useEffect(() => () => unlisten(['update.launch.yrqal8CCmm7']), [unlisten]);
+  const { error, data, loading } = useQuery(UPCOMING_LAUNCHES, {
+    variables: { limit: 1 },
+    fetchPolicy: typeof window == 'undefined' ? 'cache-only' : 'cache-first',
+    nextFetchPolicy: 'cache-first',
+  });
+  if (loading) return <div></div>;
+  if (error) return <p>{error.toString()}</p>;
+
+  useEffect(() => () => unlisten([`update.launch.${data.launches[0].id}`]), [unlisten]);
   useEffect(() => {
-    listen(['update.launch.yrqal8CCmm7']);
-    events.on('update.launch.yrqal8CCmm7', (data) => {
+    listen([`update.launch.${data.launches[0].id}`]);
+    events.on(`update.launch.${data.launches[0].id}`, (data) => {
       setUpdates(JSON.stringify(data));
     });
   }, []);
@@ -23,12 +32,13 @@ export const getStaticProps: GetStaticProps = async function () {
   const client = createClient();
 
   await client.query({
-    query: STARTER_QUERY,
+    query: UPCOMING_LAUNCHES,
+    variables: { limit: 1 },
   });
 
   return {
     props: ApolloWithState(client, {
-      heroOnly: false,
+      heroOnly: true,
     }),
     revalidate: 1,
   };
