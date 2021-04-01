@@ -1,12 +1,12 @@
 import React, { Fragment, PropsWithChildren } from 'react';
 import Head from 'next/head';
 import { NextPage } from 'next';
+import { WithChildren } from 'types/next-page';
 
 import Header from './header';
 import Footer from './footer';
 import Hero from 'components/Hero';
 
-type WithChildren = { children: React.ReactNode };
 const RootLayout: React.FC<WithChildren> = ({ children }) => {
   return (
     <Fragment>
