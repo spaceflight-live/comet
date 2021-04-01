@@ -26,12 +26,16 @@ type Props = {
 };
 
 const Countdown: FC<Props> = ({ net }) => {
-  const [time, setTime] = useState<FormattedTime>();
+  const [time, setTime] = useState<FormattedTime>(formatTime(new Date(net).getTime() - Date.now()));
 
   useEffect(() => {
-    setInterval(() => {
+    const formatter = setInterval(() => {
       setTime(formatTime(new Date(net).getTime() - Date.now()));
     }, 1000);
+
+    return () => {
+      clearInterval(formatter);
+    };
   }, []);
 
   if (!time) return <></>;

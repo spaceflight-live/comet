@@ -12,7 +12,7 @@ const NextLaunch: FC<Props> = ({ data }) => {
       </span>
       <span className="block text-3xl font-bold text-shadow">{data.name}</span>
       <span className="block text-xl text-shadow">
-        {data.vehicle} &bull; {data.pad}
+        {data.vehicle.name} &bull; {data.pad.name}
       </span>
       <div className="block text-shadow">
         <svg
@@ -33,7 +33,7 @@ const NextLaunch: FC<Props> = ({ data }) => {
             d="M12 0c-4.198 0-8 3.403-8 7.602 0 4.198 3.469 9.21 8 16.398 4.531-7.188 8-12.2 8-16.398 0-4.199-3.801-7.602-8-7.602zm0 11c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"
           />
         </svg>
-        <span>{data.location}</span>
+        <span>{data.pad.location.name}</span>
       </div>
     </div>
   );

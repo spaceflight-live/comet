@@ -1,12 +1,12 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, PropsWithChildren } from 'react';
 import Head from 'next/head';
 import { NextPage } from 'next';
+import { WithChildren } from 'types/next-page';
 
 import Header from './header';
 import Footer from './footer';
-import Landing from '../Hero';
+import Hero from 'components/Hero';
 
-type WithChildren = { children: React.ReactNode };
 const RootLayout: React.FC<WithChildren> = ({ children }) => {
   return (
     <Fragment>
@@ -35,15 +35,21 @@ const Layout: React.FC<WithChildren> = ({ children }) => {
   );
 };
 
-const LayoutWithHero: React.FC<WithChildren> = ({ children }) => {
+const LayoutWithHero: React.FC<PropsWithChildren<any>> = ({ children }) => {
   return (
     <Fragment>
-      <div className="h-screen w-screen flex flex-col">
-        <Landing />
-        {/* <Header /> */}
+      <div className="h-screen flex flex-col">
+        <Hero {...children.props?.hero} />
+        {children.props?.heroOnly ? <></> : <Header />}
       </div>
-      <div className="mx-auto container text-black">{children}</div>
-      {/* <Footer /> */}
+      {children.props?.heroOnly ? (
+        <></>
+      ) : (
+        <>
+          <div className="mx-auto container text-black">{children}</div>
+          <Footer />
+        </>
+      )}
     </Fragment>
   );
 };
