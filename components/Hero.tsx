@@ -49,7 +49,7 @@ const Hero: FC = () => {
   return (
     <div className="bg-black h-full bg-center bg-cover relative">
       <Image
-        src={hero.vehicle.image_path}
+        src={`https://constellation.${hero.vehicle.image_path}`}
         layout="fill"
         objectFit="cover"
         className="opacity-50 absolute select-none"
