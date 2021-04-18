@@ -1,0 +1,24 @@
+query getUpcomingLaunches($limit: Int, $when: String! = "NOW()") {
+  launches(
+    limit: $limit
+    orderBy: { field: net, direction: ASC }
+    filters: [{ field: net, operation: greaterThan, value: $when }]
+  ) {
+    id
+    name
+    net
+    pad {
+      id
+      name
+      location {
+        id
+        name
+      }
+    }
+    vehicle {
+      id
+      name
+      image_path
+    }
+  }
+}

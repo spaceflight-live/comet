@@ -9,7 +9,7 @@ function initClient(): ApolloClient<NormalizedCacheObject> {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
     link: createHttpLink({
-      uri: 'https://booster.spaceflight.live',
+      uri: typeof window === 'undefined' ? 'http://booster:3000' : 'https://booster.spaceflight.live',
       credentials: 'same-origin',
     }),
     ssrForceFetchDelay: 1,

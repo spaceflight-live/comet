@@ -2,14 +2,17 @@ import { FC } from 'react';
 
 type Props = {
   data: any;
+  next: boolean;
 };
 
-const NextLaunch: FC<Props> = ({ data }) => {
+const NextLaunch: FC<Props> = ({ data, next }) => {
   return (
-    <div className="text-left text-white z-10 m-auto">
-      <span className="font-bold text-4xl mb-3 block text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-green-400">
-        Next Launch
-      </span>
+    <div className="text-left text-white z-10 m-auto ml-0">
+      {next && (
+        <span className="font-bold text-4xl mb-3 block text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-green-400">
+          Next Launch
+        </span>
+      )}
       <span className="block text-3xl font-bold text-shadow">{data.name}</span>
       <span className="block text-xl text-shadow">
         {data.vehicle.name} &bull; {data.pad.name}

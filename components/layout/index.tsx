@@ -39,7 +39,7 @@ const RootLayout: React.FC<WithChildren> = ({ children }) => {
         <link rel="dns-prefetch" href="https://booster.spaceflight.live/" />
         <link rel="dns-prefetch" href="https://orbiter.spaceflight.live/" />
       </Head>
-      <div className="root font-inter text-white">{children}</div>
+      <div className="root font-inter text-white h-full w-full">{children}</div>
       <script
         defer
         src="https://static.cloudflareinsights.com/beacon.min.js"
@@ -62,15 +62,15 @@ const Layout: React.FC<WithChildren> = ({ children }) => {
 const LayoutWithHero: React.FC<PropsWithChildren<any>> = ({ children }) => {
   return (
     <Fragment>
-      <div className="h-screen flex flex-col">
-        <Hero {...children.props?.hero} />
+      <div className="h-full flex flex-col">
+        <Hero {...children.props?.hero} next={true} />
         {children.props?.heroOnly ? <></> : <Header />}
       </div>
       {children.props?.heroOnly ? (
         <></>
       ) : (
         <>
-          <div className="mx-auto container text-black">{children}</div>
+          <div className="mx-auto text-black">{children}</div>
           <Footer />
         </>
       )}

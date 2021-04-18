@@ -1,44 +1,56 @@
 import { useQuery } from '@apollo/client';
-import { UPCOMING_LAUNCHES } from 'components/Hero';
+import Hero from 'components/Hero';
 import { getLayoutWithHero } from 'components/layout';
 import { ApolloWithState, createClient } from 'lib/apollo';
 import { useOrbiter } from 'lib/orbiter';
 import { GetStaticProps } from 'next';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+
+import UPCOMING_LAUNCHES from '../queries/getUpcomingLaunches.graphql';
+
 const HomePage = () => {
   const { listen, unlisten, events } = useOrbiter();
-  const [updates, setUpdates] = useState<string>('');
 
-  const { error, data, loading } = useQuery(UPCOMING_LAUNCHES, {
-    variables: { limit: 1 },
+  const { error, data, loading } = useQuery<{ launches: Record<string, unknown>[] }>(UPCOMING_LAUNCHES, {
+    variables: { limit: 5 },
     fetchPolicy: typeof window == 'undefined' ? 'cache-only' : 'cache-first',
     nextFetchPolicy: 'cache-first',
   });
   if (loading) return <div></div>;
   if (error) return <p>{error.toString()}</p>;
+  const [, ...launches] = data.launches;
 
-  useEffect(() => () => unlisten([`update.launch.${data.launches[0].id}`]), [unlisten]);
+  const topics = launches.map(({ id }) => `update.launch.${id}`);
+
+  useEffect(() => () => unlisten(topics), [unlisten]);
   useEffect(() => {
-    listen([`update.launch.${data.launches[0].id}`]);
-    events.on(`update.launch.${data.launches[0].id}`, (data) => {
-      setUpdates(JSON.stringify(data));
-    });
+    listen(topics);
+    topics.map((topic) => events.on(topic, console.log));
   }, []);
 
-  return <h2>Last Update: {updates}</h2>;
+  return (
+    <div className="w-full">
+      {launches.map((launch: any) => (
+        <div className="h-56" key={launch.id as string}>
+          <Hero {...launch} next={false} darker={true} />
+        </div>
+      ))}
+    </div>
+  );
 };
 
 export const getStaticProps: GetStaticProps = async function () {
   const client = createClient();
 
-  await client.query({
+  const { data } = await client.query({
     query: UPCOMING_LAUNCHES,
-    variables: { limit: 1 },
+    variables: { limit: 5 },
   });
 
   return {
     props: ApolloWithState(client, {
-      heroOnly: true,
+      heroOnly: data.launches.length <= 1,
+      hero: data.launches[0],
     }),
     revalidate: 1,
   };
