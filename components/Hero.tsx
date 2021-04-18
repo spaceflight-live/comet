@@ -9,7 +9,7 @@ const Hero: FC = (hero?: any) => {
   if (!hero || !Object.keys(hero).length) return <></>;
 
   return (
-    <div className="bg-black h-full bg-center bg-cover relative">
+    <div className="bg-black h-full bg-center bg-cover relative flex justify-center items-center">
       <Image
         src={`https://constellation.spaceflight.live/${hero.vehicle.image_path}`}
         layout="fill"
@@ -17,7 +17,7 @@ const Hero: FC = (hero?: any) => {
         className={`${hero.darker ? 'opacity-20' : 'opacity-50'} absolute select-none`}
         quality={100}
       />
-      <div className="flex h-full text-white">
+      <div className="flex w-full text-white">
         <div className="flex-1 flex justify-center items-center flex-col xl:flex-row container m-auto">
           <NextLaunch data={hero} next={hero.next} />
           <Countdown net={hero.net} />

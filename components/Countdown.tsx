@@ -50,22 +50,22 @@ const Countdown: FC<Props> = ({ net }) => {
   if (!time || !time.diff) return <></>;
 
   return (
-    <div className="flex z-10 m-auto text-shadow text-right mr-0">
+    <div className="flex z-10 m-auto text-shadow xl:text-right xl:mr-0">
       <div className="text-center mr-3 opacity-50">
-        <span className="font-bold text-4xl">T{time.abs ? '-' : '+'}</span>
+        <span className="font-bold md:text-4xl text-2xl">T{time.abs ? '-' : '+'}</span>
       </div>
       {Object.keys(time.diff).map((key, i) => (
         <Fragment key={key}>
           {i ? (
             <div className="ml-3 mr-3 text-center opacity-50">
-              <span className="font-bold text-6xl">:</span>
+              <span className="font-bold md:text-6xl text-4xl">:</span>
             </div>
           ) : (
             <></>
           )}
           <div className="text-center">
-            <span className="font-bold text-6xl tabular-nums">{time.diff[key]}</span>
-            <span className="font-bold text-2xl block capitalize">{key}</span>
+            <span className="font-bold md:text-6xl text-4xl tabular-nums">{time.diff[key]}</span>
+            <span className="font-bold md:text-2xl block capitalize">{key}</span>
           </div>
         </Fragment>
       ))}

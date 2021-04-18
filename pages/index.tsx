@@ -31,7 +31,7 @@ const HomePage = () => {
   return (
     <div className="w-full">
       {launches.map((launch: any) => (
-        <div className="h-56" key={launch.id as string}>
+        <div className="xl:h-56 h-72" key={launch.id as string}>
           <Hero {...launch} next={false} darker={true} />
         </div>
       ))}
