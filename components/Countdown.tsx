@@ -40,12 +40,12 @@ const Countdown: FC<Props> = ({ net }) => {
   useEffect(() => {
     const formatter = setInterval(() => {
       setTime(formatTime(new Date(net).getTime() - Date.now()));
-    }, 500);
+    }, 100);
 
     return () => {
       clearInterval(formatter);
     };
-  }, []);
+  }, [net]);
 
   if (!time || !time.diff) return <></>;
 

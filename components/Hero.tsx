@@ -2,10 +2,25 @@ import { FC } from 'react';
 import NextLaunch from './NextLaunch';
 import Image from 'next/image';
 import Dynamic from 'next/dynamic';
+import { useQuery } from '@apollo/client';
+import UPCOMING_LAUNCHES from '../queries/getUpcomingLaunches.graphql';
 
 const Countdown = Dynamic(() => import('./Countdown'), { ssr: false });
 
 const Hero: FC = (hero?: any) => {
+  // Load from client-side apollo if SSR hero
+  if (!hero.darker) {
+    const { error, data, loading } = useQuery<{ launches: Record<string, unknown>[] }>(UPCOMING_LAUNCHES, {
+      variables: { limit: 5 },
+      fetchPolicy: typeof window == 'undefined' ? 'cache-only' : 'cache-first',
+      nextFetchPolicy: 'cache-first',
+    });
+    if (loading) return <div></div>;
+    if (error) return <p>{error.toString()}</p>;
+
+    hero = data.launches[0];
+  }
+
   if (!hero || !Object.keys(hero).length) return <></>;
 
   return (
