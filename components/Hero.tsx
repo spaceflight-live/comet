@@ -18,7 +18,7 @@ const Hero: FC = (hero?: any) => {
     if (loading) return <div></div>;
     if (error) return <p>{error.toString()}</p>;
 
-    hero = data.launches[0];
+    hero = { ...data.launches[0], next: hero.next };
   }
 
   if (!hero || !Object.keys(hero).length) return <></>;
