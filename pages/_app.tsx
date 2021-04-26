@@ -24,7 +24,7 @@ const Comet = ({ Component, pageProps }: Props) => {
   );
 };
 
-Comet.getInitialProps = async (ctx: AppContext) => ({
+Comet.getStaticProps = async (ctx: AppContext) => ({
   ...(await App.getInitialProps(ctx)),
 });
 
