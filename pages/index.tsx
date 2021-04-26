@@ -1,9 +1,9 @@
 import { useQuery } from '@apollo/client';
 import Hero from 'components/Hero';
 import { getLayoutWithHero } from 'components/layout';
-import { ApolloWithState, cache, createClient } from 'lib/apollo';
+import { ApolloWithState, client, createClient } from 'lib/apollo';
 import { useOrbiter } from 'lib/orbiter';
-import { GetStaticProps } from 'next';
+import { GetServerSideProps } from 'next';
 import { useEffect } from 'react';
 
 import UPCOMING_LAUNCHES from '../queries/getUpcomingLaunches.graphql';
@@ -28,8 +28,8 @@ const HomePage = () => {
     topics.map((topic) =>
       events.on(topic, (data) => {
         delete data.last_updated;
-        cache.modify({
-          id: cache.identify(launches.find(({ id }) => id == topic.substr(topic.length - 11, 11))),
+        client.cache.modify({
+          id: client.cache.identify(launches.find(({ id }) => id == topic.substr(topic.length - 11, 11))),
           fields: Object.assign(
             {},
             ...Object.keys(data).map((key) => {
@@ -57,7 +57,7 @@ const HomePage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async function () {
+export const getServerSideProps: GetServerSideProps = async function () {
   const client = createClient();
 
   const { data } = await client.query({
@@ -70,7 +70,6 @@ export const getStaticProps: GetStaticProps = async function () {
       heroOnly: data.launches.length <= 1,
       hero: data.launches[0],
     }),
-    revalidate: 1,
   };
 };
 

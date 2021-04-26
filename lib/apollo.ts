@@ -3,8 +3,7 @@ import { useMemo } from 'react';
 import merge from 'deepmerge';
 
 export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__';
-let client: ApolloClient<NormalizedCacheObject> | undefined;
-export const cache = new InMemoryCache();
+export let client: ApolloClient<NormalizedCacheObject> | undefined;
 
 function initClient(): ApolloClient<NormalizedCacheObject> {
   return new ApolloClient({
@@ -18,7 +17,7 @@ function initClient(): ApolloClient<NormalizedCacheObject> {
     }),
     ssrForceFetchDelay: 1,
     queryDeduplication: true,
-    cache,
+    cache: new InMemoryCache(),
   });
 }
 

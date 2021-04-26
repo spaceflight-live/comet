@@ -12,6 +12,8 @@ RUN npm install
 
 COPY . /usr/src/comet
 
+ARG CONSTELLATION_SSR_HOST
+
 RUN npm run build
 EXPOSE 3000
 
