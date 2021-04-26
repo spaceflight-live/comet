@@ -12,6 +12,9 @@ const Header: FC = () => {
           <div className="flex items-center">
             <Link href="/">🚀 Spaceflight.live</Link>
           </div>
+          <Link href="https://spaceflight.live/discord">
+            <a className="ml-5 hover:underline">Join our Discord</a>
+          </Link>
           <div className="flex-1 flex items-center justify-end">
             <div className="flex space-x-4">
               <Link href="/">
