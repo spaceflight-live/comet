@@ -3,7 +3,7 @@ import Hero from 'components/Hero';
 import { getLayoutWithHero } from 'components/layout';
 import { ApolloWithState, client, createClient } from 'lib/apollo';
 import { useOrbiter } from 'lib/orbiter';
-import { GetStaticProps } from 'next';
+import { GetServerSideProps } from 'next';
 import { useEffect } from 'react';
 
 import UPCOMING_LAUNCHES from '../queries/getUpcomingLaunches.graphql';
@@ -57,7 +57,7 @@ const HomePage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async function () {
+export const getServerSideProps: GetServerSideProps = async function () {
   const client = createClient();
 
   const { data } = await client.query({
@@ -70,7 +70,6 @@ export const getStaticProps: GetStaticProps = async function () {
       heroOnly: data.launches.length <= 1,
       hero: data.launches[0],
     }),
-    revalidate: 1,
   };
 };
 
