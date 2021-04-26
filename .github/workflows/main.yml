@@ -23,8 +23,8 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          build-args:
-            - CONSTELLATION_SSR_HOST=${{ secrets.CONSTELLATION_SSR_HOST }}
+          build-args: |
+            "CONSTELLATION_SSR_HOST=${{ secrets.CONSTELLATION_SSR_HOST }}"
           tags: ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:${{ github.sha }}
       - uses: actions/checkout@master
       - name: Deploy to cluster
