@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import Hero from 'components/Hero';
 import { getLayoutWithHero } from 'components/layout';
-import { ApolloWithState, cache, createClient } from 'lib/apollo';
+import { ApolloWithState, client, createClient } from 'lib/apollo';
 import { useOrbiter } from 'lib/orbiter';
 import { GetStaticProps } from 'next';
 import { useEffect } from 'react';
@@ -28,8 +28,8 @@ const HomePage = () => {
     topics.map((topic) =>
       events.on(topic, (data) => {
         delete data.last_updated;
-        cache.modify({
-          id: cache.identify(launches.find(({ id }) => id == topic.substr(topic.length - 11, 11))),
+        client.cache.modify({
+          id: client.cache.identify(launches.find(({ id }) => id == topic.substr(topic.length - 11, 11))),
           fields: Object.assign(
             {},
             ...Object.keys(data).map((key) => {
