@@ -18,7 +18,7 @@ query getUpcomingLaunches($limit: Int, $when: String! = "NOW()") {
     vehicle {
       id
       name
-      image_path
+      imagePath
     }
   }
 }
