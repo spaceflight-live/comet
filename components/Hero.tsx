@@ -26,7 +26,7 @@ const Hero: FC = (hero?: any) => {
   return (
     <div className="bg-black h-full bg-center bg-cover relative flex justify-center items-center">
       <Image
-        src={hero.vehicle.image_path}
+        src={hero.vehicle.imagePath}
         layout="fill"
         objectFit="cover"
         className={`${hero.darker ? 'opacity-20' : 'opacity-50'} absolute select-none`}
