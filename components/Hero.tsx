@@ -32,7 +32,7 @@ const Hero: FC = (hero?: any) => {
         className={`${hero.darker ? 'opacity-20' : 'opacity-50'} absolute select-none`}
         quality={100}
       />
-      <div className="flex w-full text-white" title={new Date(hero.net).toString()}>
+      <div className="flex w-full text-white">
         <div className="flex-1 flex justify-center items-center flex-col xl:flex-row container m-auto">
           <NextLaunch data={hero} next={hero.next} />
           <Countdown net={hero.net} />
