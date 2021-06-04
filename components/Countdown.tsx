@@ -50,7 +50,7 @@ const Countdown: FC<Props> = ({ net }) => {
   if (!time || !time.diff) return <></>;
 
   return (
-    <div className="flex z-10 m-auto text-shadow xl:text-right xl:mr-0">
+    <div className="flex z-10 m-auto text-shadow xl:text-right xl:mr-0" title={new Date(net).toString()}>
       <div className="text-center mr-3 opacity-50">
         <span className="font-bold md:text-4xl text-2xl">T{time.abs ? '-' : '+'}</span>
       </div>
