@@ -1,10 +1,10 @@
-query getUpcomingLaunches($limit: Int, $when: String! = "NOW()") {
+query getUpcomingLaunches($limit: Int, $when: DateTime! = "NOW()") {
   launches(
     limit: $limit
-    orderBy: { field: net, direction: ASC }
+    orderBy: {field: net, direction: ASC}
     filters: [
-      { field: status, operation: notEqual, value: "TBD" }
-      { field: net, operation: greaterThan, value: $when }
+      {field: status, operation: not, value: "TBD"}
+      {field: net, operation: gt, date: $when}
     ]
   ) {
     id
@@ -21,7 +21,7 @@ query getUpcomingLaunches($limit: Int, $when: String! = "NOW()") {
     vehicle {
       id
       name
-      imagePath
+      image
     }
   }
 }
