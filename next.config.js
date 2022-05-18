@@ -1,17 +1,7 @@
 const { readFile } = require('fs/promises');
 const { join } = require('path');
 
-const imageDomains = ['constellation.spaceflight.live'];
-if ('CONSTELLATION_SSR_HOST' in process.env) {
-  const { hostname } = new URL(process.env.CONSTELLATION_SSR_HOST);
-  process.env.NEXT_PUBLIC_CONSTELLATION_SSR_HOST = process.env.CONSTELLATION_SSR_HOST;
-  imageDomains.push(hostname);
-}
-
 module.exports = {
-  images: {
-    domains: imageDomains,
-  },
   generateBuildId: async () => {
     const head = (await readFile(join(__dirname, '.git', 'HEAD'), 'utf8')).trim();
     let refIndex = head.indexOf('ref:');
