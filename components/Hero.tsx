@@ -24,13 +24,10 @@ const Hero: FC = (hero?: any) => {
   if (!hero || !Object.keys(hero).length) return <></>;
 
   return (
-    <div className="bg-black h-full bg-center bg-cover relative flex justify-center items-center">
+    <div className="bg-black h-full relative flex justify-center items-center">
       <Image
         src={hero.vehicle.image}
-        layout="fill"
-        objectFit="cover"
-        className={`${hero.darker ? 'opacity-20' : 'opacity-50'} absolute select-none`}
-        quality={100}
+        className={`${hero.darker ? 'opacity-20' : 'opacity-50'} absolute select-none h-full w-full bg-center bg-cover`}
       />
       <div className="flex w-full text-white">
         <div className="flex-1 flex justify-center items-center flex-col xl:flex-row container m-auto">

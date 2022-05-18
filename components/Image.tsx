@@ -1,12 +1,11 @@
-import React from 'react';
-import Image from 'next/image';
+import React, { FC, HTMLAttributes } from 'react';
 
 const baseUrl = process.env.NEXT_PUBLIC_CONSTELLATION_SSR_HOST;
 
-const ImageWithBase: typeof Image = (props) => {
+const ImageWithBase: FC<HTMLAttributes<HTMLDivElement> & { src: string }> = (props) => {
   const host = baseUrl ? baseUrl : 'https://constellation.spaceflight.live';
 
-  return <Image {...props} src={`${host}/${props.src}`} />;
+  return <div style={{ backgroundImage: `url(${host}/${props.src})` }} {...props}></div>;
 };
 
 export default ImageWithBase;
