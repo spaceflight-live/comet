@@ -1,27 +1,32 @@
 {
   "name": "comet",
   "version": "0.1.0",
-  "private": true,
   "scripts": {
     "dev": "next",
     "build": "next build",
     "start": "next start"
   },
   "dependencies": {
-    "@apollo/client": "^3.3.15",
-    "deepmerge": "^4.2.2",
-    "graphql": "^15.5.0",
-    "next": "^10.0.6",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "@prisma/client": "^4.1.0",
+    "@trpc/client": "^9.26.2",
+    "@trpc/next": "^9.26.2",
+    "@trpc/react": "^9.26.2",
+    "@trpc/server": "^9.26.2",
+    "next": "^12.2.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-query": "^3.37.0",
+    "superjson": "^1.9.1",
+    "zod": "^3.17.9"
   },
   "devDependencies": {
-    "@types/node": "^14.14.41",
-    "@types/react": "^17.0.3",
-    "autoprefixer": "^10.2.5",
-    "postcss": "^8.2.10",
-    "prettier": "^2.2.1",
-    "tailwindcss": "^2.1.1",
-    "typescript": "^4.2.4"
+    "@types/node": "^18.0.6",
+    "@types/react": "^18.0.15",
+    "@types/react-dom": "^18.0.6",
+    "autoprefixer": "^10.4.7",
+    "postcss": "^8.4.14",
+    "prisma": "^4.1.0",
+    "tailwindcss": "^3.1.5",
+    "typescript": "^4.7.4"
   }
 }

@@ -79,6 +79,6 @@ const LayoutWithHero: React.FC<PropsWithChildren<any>> = ({ children }) => {
 };
 
 export const getRootLayout = (page: JSX.Element): JSX.Element => <RootLayout>{page}</RootLayout>;
-export const getDefaultLayout = (page: NextPage): JSX.Element => getRootLayout(<Layout>{page}</Layout>);
+export const getDefaultLayout = (page: JSX.Element): JSX.Element => getRootLayout(<Layout>{page}</Layout>);
 export const getLayoutWithHero = (page: NextPage): JSX.Element =>
   getRootLayout(<LayoutWithHero>{page}</LayoutWithHero>);

@@ -1,8 +1,5 @@
 import Link from 'next/link';
 import { FC } from 'react';
-import { print } from 'graphql/language/printer';
-
-import UPCOMING_LAUNCHES from '../../queries/getUpcomingLaunches.graphql';
 
 const Header: FC = () => {
   return (
@@ -17,13 +14,13 @@ const Header: FC = () => {
               <Link href="/">
                 <a className="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">Home</a>
               </Link>
-              <a
+              {/* <a
                 href={`https://booster.spaceflight.live?query=${encodeURIComponent(print(UPCOMING_LAUNCHES))}`}
                 target="_blank"
                 className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
               >
                 Developers
-              </a>
+              </a> */}
             </div>
           </div>
         </div>

@@ -22,10 +22,10 @@ function formatTime(time: number): FormattedTime {
   return {
     abs,
     diff: {
-      days: (String(days).padStart(2, '0') as unknown) as number,
-      hours: (String(hours).padStart(2, '0') as unknown) as number,
-      minutes: (String(minutes).padStart(2, '0') as unknown) as number,
-      seconds: (String(seconds).padStart(2, '0') as unknown) as number,
+      days: String(days).padStart(2, '0') as unknown as number,
+      hours: String(hours).padStart(2, '0') as unknown as number,
+      minutes: String(minutes).padStart(2, '0') as unknown as number,
+      seconds: String(seconds).padStart(2, '0') as unknown as number,
     },
   };
 }

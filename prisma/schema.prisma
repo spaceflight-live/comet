@@ -1,0 +1,495 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Agency {
+  id                  String              @id @db.VarChar(11)
+  tsd_id              Int                 @unique(map: "agencies_tsd_id")
+  name                String
+  type                AgencyType?
+  founded             Int?                @db.SmallInt
+  info_url            String?
+  wiki_url            String?
+  logo_path           String?
+  country             Country[]
+  astronauts          Astronaut[]
+  launches            Launch[]
+  pads                Pad[]
+  spacecraft_vehicles SpacecraftVehicle[]
+  vehicles            Vehicle[]
+
+  @@map("agencies")
+}
+
+model Astronaut {
+  id              String           @id(map: "astronaut_pkey") @db.VarChar(11)
+  tsd_id          Int              @unique(map: "astronaut_tsd_id")
+  name            String
+  type            AstronautType
+  status          AstronautStatus
+  agency_id       String?          @db.VarChar(11)
+  dob             DateTime         @db.Date
+  dod             DateTime?        @db.Date
+  nationality     Nationality
+  socials         Json?
+  avatar_path     String?
+  agencies        Agency?          @relation(fields: [agency_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "astronaut_agency_id_fkey")
+  spacecraft_crew SpacecraftCrew[]
+
+  @@map("astronauts")
+}
+
+model LandingLocation {
+  id          String              @id @db.VarChar(11)
+  tsd_id      Int                 @unique(map: "landing_location_tsd_id")
+  name        String
+  abbrev      String              @db.VarChar
+  type        LandingLocationType
+  location_id String?             @db.VarChar(11)
+  location    Location?           @relation(fields: [location_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  landings    Landing[]
+
+  @@map("landing_locations")
+}
+
+model Landing {
+  id               String          @id @db.VarChar(11)
+  launch_id        String          @db.VarChar(11)
+  location_id      String          @db.VarChar(11)
+  launcher_id      String          @db.VarChar(11)
+  attempt          Boolean
+  success          Boolean?
+  launch           Launch          @relation(fields: [launch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  launcher         Launcher        @relation(fields: [launcher_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  landing_location LandingLocation @relation(fields: [location_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([launcher_id, launch_id], map: "landings_unique")
+  @@map("landings")
+}
+
+model Launcher {
+  id            String    @id @db.VarChar(11)
+  tsd_id        Int       @unique(map: "launchers_tsd_id")
+  proven        Boolean
+  serial_number String
+  landings      Landing[]
+
+  @@map("launchers")
+}
+
+model Launch {
+  id                     String           @id @db.VarChar(11)
+  tsd_id                 String           @unique(map: "tsd_id") @db.Uuid
+  name                   String
+  status                 LaunchStatus?
+  last_updated           DateTime         @default(now()) @db.Timestamptz(6)
+  net                    DateTime?        @db.Timestamptz(6)
+  window_open            DateTime?        @db.Timestamptz(6)
+  window_close           DateTime?        @db.Timestamptz(6)
+  lsp_id                 String?          @db.VarChar(11)
+  probability            Int?             @db.SmallInt
+  hashtag                String?          @db.VarChar(64)
+  vehicle_id             String?          @db.VarChar(11)
+  launcher_ids           String[]         @db.VarChar(11)
+  description            String?
+  type                   LaunchType?
+  orbit                  Orbit?
+  video_url              String?          @db.VarChar
+  spacecraft_id          String?          @db.VarChar(11)
+  spacecraft_destination String?          @db.VarChar
+  pad_id                 String?          @db.VarChar(11)
+  agencies               Agency?          @relation(fields: [lsp_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  pad                    Pad?             @relation(fields: [pad_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  spacecraft             Spacecraft?      @relation(fields: [spacecraft_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vehicle                Vehicle?         @relation(fields: [vehicle_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  landings               Landing[]
+  spacecraft_crew        SpacecraftCrew[]
+
+  @@index([name], map: "launches_name")
+  @@index([net], map: "launches_net")
+  @@index([orbit], map: "launches_orbit")
+  @@index([status], map: "launches_status")
+  @@index([vehicle_id], map: "launches_vehicle_id")
+  @@map("launches")
+}
+
+model Location {
+  id                String            @id @db.VarChar(11)
+  tsd_id            Int               @unique(map: "location_tsd_id")
+  name              String
+  country           Country?
+  landing_locations LandingLocation[]
+  pads              Pad[]
+
+  @@map("locations")
+}
+
+model Notam {
+  id           String        @id @db.VarChar(11)
+  notam_id     String        @db.VarChar(6)
+  fns_id       String        @unique(map: "notams_clone_fns_id") @db.VarChar(15)
+  issued_at    DateTime      @db.Timestamptz(6)
+  status       NotamStatus
+  airspace     NotamAirspace
+  window_open  DateTime      @map("start_timestamp") @db.Timestamptz(6)
+  window_close DateTime      @map("end_timestamp") @db.Timestamptz(6)
+  altitude_min Int           @map("min_altitude")
+  altitude_max Int           @map("max_altitude")
+  coords       Json
+  radius       Int?
+  notam        String
+  location_ids String[]      @db.VarChar(11)
+  launch_ids   String[]      @db.VarChar(11)
+  last_updated DateTime      @default(now()) @db.Timestamptz(6)
+  location     String        @db.VarChar(64)
+
+  @@unique([notam_id, issued_at], map: "notams_clone_issued")
+  @@map("notams")
+}
+
+model Pad {
+  id          String    @id @db.VarChar(11)
+  tsd_id      Int       @unique(map: "pads_tsd_id")
+  agency_id   String?   @db.VarChar(11)
+  name        String
+  info_url    String?
+  wiki_url    String?
+  latitude    Float
+  longitude   Float
+  location_id String?   @db.VarChar(11)
+  agency      Agency?   @relation(fields: [agency_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  location    Location? @relation(fields: [location_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pads_location_fkey")
+  launches    Launch[]
+
+  @@map("pads")
+}
+
+model SpacecraftCrew {
+  id            String             @id @db.VarChar(11)
+  spacecraft_id String             @db.VarChar(11)
+  direction     CrewDirection
+  role          SpacecraftCrewRole
+  astronaut_id  String             @db.VarChar(11)
+  launch_id     String?            @db.VarChar(11)
+  astronauts    Astronaut          @relation(fields: [astronaut_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  launches      Launch?            @relation(fields: [launch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  spacecrafts   Spacecraft         @relation(fields: [spacecraft_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([spacecraft_id, direction, astronaut_id, launch_id], map: "unique_crew")
+  @@map("spacecraft_crew")
+}
+
+model SpacecraftVehicle {
+  id          String       @id @db.VarChar(11)
+  tsd_id      Int          @unique(map: "spacecraft_vehicles_tsd_id")
+  name        String
+  agency_id   String?      @db.VarChar(11)
+  human_rated Boolean
+  info_url    String?
+  wiki_url    String?
+  agency      Agency?      @relation(fields: [agency_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  spacecrafts Spacecraft[]
+
+  @@map("spacecraft_vehicles")
+}
+
+model Spacecraft {
+  id                  String            @id @db.VarChar(11)
+  tsd_id              Int               @unique(map: "spacecrafts_tsd_id")
+  name                String
+  serial_number       String?
+  status              SpacecraftStatus
+  vehicle_id          String            @db.VarChar(11)
+  spacecraft_vehicles SpacecraftVehicle @relation(fields: [vehicle_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "spacecrafts_vehicles_id_fkey")
+  launches            Launch[]
+  spacecraft_crew     SpacecraftCrew[]
+
+  @@map("spacecrafts")
+}
+
+model StarbaseRoadClosures {
+  date         DateTime  @id @db.Date
+  order        String?   @db.VarChar
+  start        DateTime? @db.Timetz(6)
+  end          DateTime? @db.Timetz(6)
+  status       String?   @db.VarChar
+  last_updated DateTime? @db.Timestamptz(6)
+
+  @@map("starbase_road_closures")
+}
+
+model Vehicle {
+  id              String   @id @db.VarChar(11)
+  name            String
+  description     String?
+  manufacturer_id String   @db.VarChar(11)
+  family          String
+  variant         String
+  info_url        String?
+  wiki_url        String?
+  image_path      String?
+  tsd_id          Int      @unique
+  agency          Agency   @relation(fields: [manufacturer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  launches        Launch[]
+
+  @@map("vehicles")
+}
+
+enum AgencyType {
+  government
+  commercial
+  private
+  multinational
+}
+
+enum AstronautStatus {
+  Deceased
+  Lost_In_Training              @map("Lost In Training")
+  Retired
+  Lost_In_Flight                @map("Lost In Flight")
+  Died_While_In_Active_Service  @map("Died While In Active Service")
+  Active
+  Dismissed
+  In_Training                   @map("In-Training")
+}
+
+enum AstronautType {
+  Government
+  Non_Astronaut_Passenger  @map("Non-Astronaut Passenger")
+  Payload_Specialist       @map("Payload Specialist")
+  Private
+  Commercial
+  Non_Human                @map("Non-Human")
+  Unknown
+}
+
+enum Country {
+  USA
+  RUS
+  CHN
+  FRA
+  IND
+  JPN
+  IRN
+  PRK
+  KOR
+  ISR
+  EMPTY_ENUM_VALUE  @map("")
+  KAZ
+  NZL
+  GUF
+  UNK
+  MHL
+  GBR
+  ITA
+  UKR
+  EUR
+  AUS
+  DEU
+  BRA
+  TWN
+  AUT
+  BEL
+  CZE
+  DNK
+  FIN
+  GRC
+  IRE
+  LUZ
+  NLD
+  NOR
+  POL
+  PRT
+  ROU
+  ESP
+  SWE
+  CHE
+}
+
+enum CrewDirection {
+  launch
+  onboard
+  landing
+}
+
+enum LandingLocationType {
+  ASDS
+  RTLS
+  PL
+  Ocean
+}
+
+enum LaunchStatus {
+  Success
+  Failure
+  Partial_Failure  @map("Partial Failure")
+  TBD
+  TBC
+  Go
+  In_Flight        @map("In Flight")
+  Hold
+}
+
+enum LaunchType {
+  Human_Exploration      @map("Human Exploration")
+  Test_Flight            @map("Test Flight")
+  Heliophysics
+  Planetary_Science      @map("Planetary Science")
+  Robotic_Exploration    @map("Robotic Exploration")
+  Communications
+  Earth_Science          @map("Earth Science")
+  Government_Top_Secret  @map("Government/Top Secret")
+  Astrophysics
+  Unknown
+  Dedicated_Rideshare    @map("Dedicated Rideshare")
+  Navigation
+  Resupply
+  Suborbital
+  Tourism
+  Lunar_Exploration      @map("Lunar Exploration")
+  Test_Target            @map("Test Target")
+  Materials_Science      @map("Materials Science")
+  Biology
+  Technology
+}
+
+enum Nationality {
+  Russian
+  American
+  Ukrainian
+  Soviet
+  Belarusian
+  Czech
+  German
+  Polish
+  Bulgarian
+  Hungarian
+  Vietnamese
+  Cuban
+  Mongolian
+  Romanian
+  French
+  Indian
+  Australian_American  @map("Australian-American")
+  Canadian
+  Dutch_American       @map("Dutch-American")
+  Saudi_Arabian        @map("Saudi Arabian")
+  Dutch
+  Mexican
+  Syrian
+  Afghan
+  Japanese
+  British
+  Kazakhstani
+  Austrian
+  Belgian
+  American_Vietnamese  @map("American Vietnamese")
+  Swiss
+  Italian
+  Kyrgyzstan
+  Slovak
+  South_African        @map("South African")
+  Israeli
+  Spanish
+  Ukraine
+  Chinese
+  Brazilian
+  Iranian
+  Malaysian
+  South_Korean         @map("South Korean")
+  Swedish
+  Danish
+  Earthling
+  Emirati
+  Scottish
+  Scottish_American    @map("Scottish-American")
+}
+
+enum NotamAirspace {
+  SPACE_FLT_OPS          @map("SPACE FLT OPS")
+  SPACE_OPS_AREA         @map("SPACE OPS AREA")
+  SPACE_OPERATIONS_AREA  @map("SPACE OPERATIONS AREA")
+  ROCKET_LAUNCH          @map("ROCKET LAUNCH")
+  SPACECRAFT_RECOVERY    @map("SPACECRAFT RECOVERY")
+}
+
+enum NotamStatus {
+  issued
+  active
+  canceled
+  concluded
+}
+
+enum Orbit {
+  LEO
+  Sub
+  Elliptical
+  HEO
+  Helio_N_A       @map("Helio-N/A")
+  Solar_Esc       @map("Solar Esc.")
+  LO
+  GTO
+  SSO
+  MEO
+  L2
+  GSO
+  GSTO
+  L1_point        @map("L1-point")
+  Direct_GEO      @map("Direct-GEO")
+  PO
+  Super_GTO       @map("Super-GTO")
+  Lunar_Impactor  @map("Lunar Impactor")
+  Lunar_flyby     @map("Lunar flyby")
+  Mars_flyby      @map("Mars flyby")
+  Venus_flyby     @map("Venus flyby")
+  Venus
+  Mars
+  Mercury_flyby   @map("Mercury flyby")
+  Asteroid
+  N_A             @map("N/A")
+}
+
+enum SpacecraftCrewRole {
+  Pilot
+  Command_Pilot                     @map("Command Pilot")
+  Commander
+  Engineer
+  Medical_Doctor                    @map("Medical Doctor")
+  Lunar_Module_Pilot                @map("Lunar Module Pilot")
+  Command_Module_Pilot              @map("Command Module Pilot")
+  Research_Engineer                 @map("Research Engineer")
+  Flight_Engineer                   @map("Flight Engineer")
+  Test_Engineer                     @map("Test Engineer")
+  Research_Cosmonaut                @map("Research Cosmonaut")
+  Science_Pilot                     @map("Science Pilot")
+  Docking_Module_Pilot              @map("Docking Module Pilot")
+  Mission_Specialist                @map("Mission Specialist")
+  Payload_Specialist                @map("Payload Specialist")
+  Research_Doctor                   @map("Research Doctor")
+  Spaceflight_Participant           @map("Spaceflight Participant")
+  Orbital_module_astronaut          @map("Orbital module astronaut")
+  Descent_module_monitor_astronaut  @map("Descent module monitor astronaut")
+  Space_Traveller                   @map("Space Traveller")
+  Anthropomorphic_Test_Device       @map("Anthropomorphic Test Device")
+  Zero_G_Indicator                  @map("Zero-G Indicator")
+  Spacecraft_Commander              @map("Spacecraft Commander")
+  Joint_Operations_Commander        @map("Joint Operations Commander")
+  Flight_Surgeon                    @map("Flight Surgeon")
+  Senior_Pilot                      @map("Senior Pilot")
+  Tourist
+  Passenger
+  Operator
+}
+
+enum SpacecraftStatus {
+  Single_Use          @map("Single Use")
+  Destroyed
+  Retired
+  Active
+  Under_construction  @map("Under construction")
+}
