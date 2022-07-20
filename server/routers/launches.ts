@@ -6,8 +6,7 @@ export default createRouter()
     input: z.object({
       id: z.string(),
     }),
-    async resolve({ ctx, input }) {
-      const { id } = input;
+    async resolve({ ctx, input: { id } }) {
       return {
         launch: await ctx.prisma.launch.findFirst({
           where: { id },
@@ -20,17 +19,28 @@ export default createRouter()
     },
   })
   .query('getUpcoming', {
-    input: z
-      .object({
-        limit: z.number().max(100).min(1),
-      })
-      .nullish(),
-    async resolve({ ctx, input }) {
-      return await ctx.prisma.launch.findMany({
-        orderBy: { net: 'asc' },
-        take: input ? input.limit : 15,
+    input: z.object({
+      limit: z.number().max(100).min(1),
+      cursor: z.string().nullish(),
+    }),
+    async resolve({ ctx, input: { limit, cursor } }) {
+      const launches = await ctx.prisma.launch.findMany({
         select: { id: true },
+        take: (limit ?? 15) + 1,
+        cursor: cursor ? { id: cursor } : undefined,
         where: { net: { gte: new Date() } },
+        orderBy: { net: 'asc' },
       });
+
+      let nextCursor: typeof cursor | null = null;
+      if (launches.length > (limit ?? 15)) {
+        const nextItem = launches.pop();
+        nextCursor = nextItem?.id;
+      }
+
+      return {
+        launches,
+        nextCursor,
+      };
     },
   });

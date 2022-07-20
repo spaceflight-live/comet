@@ -63,12 +63,21 @@ const Layout: React.FC<WithChildren> = ({ children }) => {
 };
 
 const LayoutWithHero: React.FC<PropsWithChildren<any>> = ({ children }) => {
-  const { data } = trpc.useQuery(['launches.getUpcoming', { limit: 5 }]);
+  const { data } = trpc.useInfiniteQuery([
+    'launches.getUpcoming',
+    { limit: 5 },
+  ]);
 
   return (
     <Fragment>
       <div className="h-full flex flex-col">
-        {data && <Hero launchId={data[0].id} darker={false} next={true} />}
+        {data && data.pages && (
+          <Hero
+            launchId={data.pages[0].launches[0].id}
+            darker={false}
+            next={true}
+          />
+        )}
         {children.props?.heroOnly ? <></> : <Header />}
       </div>
       {children.props?.heroOnly ? (
