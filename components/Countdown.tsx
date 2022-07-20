@@ -31,15 +31,17 @@ function formatTime(time: number): FormattedTime {
 }
 
 type Props = {
-  net: string;
+  net: Date;
 };
 
 const Countdown: FC<Props> = ({ net }) => {
-  const [time, setTime] = useState<FormattedTime>(formatTime(new Date(net).getTime() - Date.now()));
+  const [time, setTime] = useState<FormattedTime>(
+    formatTime(net.getTime() - Date.now()),
+  );
 
   useEffect(() => {
     const formatter = setInterval(() => {
-      setTime(formatTime(new Date(net).getTime() - Date.now()));
+      setTime(formatTime(net.getTime() - Date.now()));
     }, 100);
 
     return () => {
@@ -50,9 +52,14 @@ const Countdown: FC<Props> = ({ net }) => {
   if (!time || !time.diff) return <></>;
 
   return (
-    <div className="flex z-10 m-auto text-shadow xl:text-right xl:mr-0" title={new Date(net).toString()}>
+    <div
+      className="flex z-10 m-auto text-shadow xl:text-right xl:mr-0"
+      title={net?.toString()}
+    >
       <div className="text-center mr-3 opacity-50">
-        <span className="font-bold md:text-4xl text-2xl">T{time.abs ? '-' : '+'}</span>
+        <span className="font-bold md:text-4xl text-2xl">
+          T{time.abs ? '-' : '+'}
+        </span>
       </div>
       {Object.keys(time.diff).map((key, i) => (
         <Fragment key={key}>
@@ -64,8 +71,12 @@ const Countdown: FC<Props> = ({ net }) => {
             <></>
           )}
           <div className="text-center">
-            <span className="font-bold md:text-6xl text-4xl tabular-nums">{time.diff[key]}</span>
-            <span className="font-bold md:text-2xl block capitalize">{key}</span>
+            <span className="font-bold md:text-6xl text-4xl tabular-nums">
+              {time.diff[key as keyof FormattedTime['diff']]}
+            </span>
+            <span className="font-bold md:text-2xl block capitalize">
+              {key}
+            </span>
           </div>
         </Fragment>
       ))}

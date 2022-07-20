@@ -1,11 +1,11 @@
-import React, { Fragment, PropsWithChildren } from 'react';
-import Head from 'next/head';
-import { NextPage } from 'next';
-import { WithChildren } from 'types/next-page';
-
-import Header from './header';
 import Footer from './footer';
+import Header from './header';
+import { trpc } from '@lib/trpc';
 import Hero from 'components/Hero';
+import { NextPage } from 'next';
+import Head from 'next/head';
+import React, { Fragment, PropsWithChildren } from 'react';
+import { WithChildren } from 'types/next-page';
 
 const RootLayout: React.FC<WithChildren> = ({ children }) => {
   return (
@@ -35,7 +35,10 @@ const RootLayout: React.FC<WithChildren> = ({ children }) => {
         <meta name="copyright" content="Spaceflight Live" />
         <meta name="rating" content="General" />
         <meta name="url" content="https://spaceflight.live" />
-        <link rel="dns-prefetch" href="https://constellation.spaceflight.live/" />
+        <link
+          rel="dns-prefetch"
+          href="https://constellation.spaceflight.live/"
+        />
         <link rel="dns-prefetch" href="https://booster.spaceflight.live/" />
         <link rel="dns-prefetch" href="https://orbiter.spaceflight.live/" />
       </Head>
@@ -60,10 +63,12 @@ const Layout: React.FC<WithChildren> = ({ children }) => {
 };
 
 const LayoutWithHero: React.FC<PropsWithChildren<any>> = ({ children }) => {
+  const { data } = trpc.useQuery(['launches.getUpcoming', { limit: 5 }]);
+
   return (
     <Fragment>
       <div className="h-full flex flex-col">
-        <Hero {...children.props?.hero} next={true} />
+        {data && <Hero launchId={data[0].id} darker={false} next={true} />}
         {children.props?.heroOnly ? <></> : <Header />}
       </div>
       {children.props?.heroOnly ? (
@@ -78,7 +83,10 @@ const LayoutWithHero: React.FC<PropsWithChildren<any>> = ({ children }) => {
   );
 };
 
-export const getRootLayout = (page: JSX.Element): JSX.Element => <RootLayout>{page}</RootLayout>;
-export const getDefaultLayout = (page: JSX.Element): JSX.Element => getRootLayout(<Layout>{page}</Layout>);
+export const getRootLayout = (page: JSX.Element): JSX.Element => (
+  <RootLayout>{page}</RootLayout>
+);
+export const getDefaultLayout = (page: JSX.Element): JSX.Element =>
+  getRootLayout(<Layout>{page}</Layout>);
 export const getLayoutWithHero = (page: NextPage): JSX.Element =>
   getRootLayout(<LayoutWithHero>{page}</LayoutWithHero>);

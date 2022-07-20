@@ -1,9 +1,8 @@
-import { GetServerSidePropsContext } from 'next';
+import prisma from '@lib/prisma';
 import * as trpc from '@trpc/server';
 import * as trpcNext from '@trpc/server/adapters/next';
-import prisma from 'utils/prisma';
 
-type CreateContextOptions = trpcNext.CreateNextContextOptions | GetServerSidePropsContext;
+type CreateContextOptions = trpcNext.CreateNextContextOptions;
 
 export const createContext = async ({ req, res }: CreateContextOptions) => {
   return {

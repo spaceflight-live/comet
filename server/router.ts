@@ -1,6 +1,7 @@
-import * as trpc from '@trpc/server';
-import { Context } from 'server/context';
+import { createRouter } from 'server/createRouter';
+import superjson from 'superjson';
+import launchesRouter from 'server/routers/launches';
 
-export const appRouter = trpc.router<Context>();
+export const appRouter = createRouter().transformer(superjson).merge('launches.', launchesRouter);
 
 export type AppRouter = typeof appRouter;

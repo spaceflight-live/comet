@@ -12,15 +12,10 @@ const Header: FC = () => {
           <div className="flex-1 flex items-center justify-end">
             <div className="flex space-x-4">
               <Link href="/">
-                <a className="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                <a className="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">
+                  Home
+                </a>
               </Link>
-              {/* <a
-                href={`https://booster.spaceflight.live?query=${encodeURIComponent(print(UPCOMING_LAUNCHES))}`}
-                target="_blank"
-                className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Developers
-              </a> */}
             </div>
           </div>
         </div>
