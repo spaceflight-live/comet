@@ -26,14 +26,3 @@ jobs:
           build-args: |
             "CONSTELLATION_SSR_HOST=${{ secrets.CONSTELLATION_SSR_HOST }}"
           tags: ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:${{ github.sha }}
-      - uses: actions/checkout@master
-      - name: Deploy to cluster
-        uses: danielr1996/kubectl-action@1.0.0
-        with:
-          kubeconfig: ${{ secrets.KUBECONFIG }}
-          args: set image --record deployment/comet comet=ghcr.io/${{ github.repository }}:${{ github.sha }}
-      - name: Verify deployment
-        uses: danielr1996/kubectl-action@1.0.0
-        with:
-          kubeconfig: ${{ secrets.KUBECONFIG }}
-          args: rollout status deployment/comet

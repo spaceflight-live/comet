@@ -1,7 +1,7 @@
 import { trpc } from '@lib/trpc';
-import Hero from 'components/Hero';
-import { getLayoutWithHero } from 'components/layout';
-import superjson from 'superjson';
+
+import Hero from '@components/Hero';
+import { getLayoutWithHero } from '@components/layout';
 
 const HomePage = () => {
   const {
@@ -11,9 +11,15 @@ const HomePage = () => {
     fetchNextPage,
     status,
     error,
-  } = trpc.useInfiniteQuery(['launches.getUpcoming', { limit: 5 }], {
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
-  });
+  } = trpc.useInfiniteQuery(
+    [
+      'launches.getLaunches',
+      { limit: 5, filters: ['net >= NOW()', 'status != TBD'].join(',') },
+    ],
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    },
+  );
 
   if (status === 'loading' || status === 'idle') return <></>;
   else if (status === 'error' && error) return <p>{error.message}</p>;
@@ -25,19 +31,19 @@ const HomePage = () => {
         page?.launches.map(
           (launch, lI) =>
             (pI !== 0 || lI !== 0) && (
-              <div className="xl:h-56 h-72" key={launch.id}>
-                <Hero launchId={launch.id} next={false} darker={true} />
+              <div className="xl:h-56 h-72" key={launch}>
+                <Hero launchId={launch} next={false} darker={true} />
               </div>
             ),
         ),
       )}
       {isFetchingNextPage ? (
-        <p className="text-gray-200 hover:bg-gray-800 hover:text-white py-3 text-sm font-medium py-2 bg-gray-700 duration-50 w-full text-center">
+        <p className="text-gray-200 text-sm font-medium py-2 bg-gray-700 duration-50 w-full text-center animate-pulse">
           Loading...
         </p>
       ) : hasNextPage ? (
         <button
-          className="text-gray-200 hover:bg-gray-800 hover:text-white py-3 text-sm font-medium py-2 bg-gray-700 duration-50 w-full"
+          className="text-gray-200 hover:bg-gray-800 hover:text-white py-2 text-sm font-medium bg-gray-700 duration-50 w-full"
           onClick={() => fetchNextPage()}
           disabled={isFetchingNextPage}
         >

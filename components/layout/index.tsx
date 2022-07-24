@@ -1,24 +1,20 @@
-import Footer from './footer';
-import Header from './header';
-import { trpc } from '@lib/trpc';
-import Hero from 'components/Hero';
-import { NextPage } from 'next';
 import Head from 'next/head';
-import React, { Fragment, PropsWithChildren } from 'react';
-import { WithChildren } from 'types/next-page';
+import { type FC, Fragment } from 'react';
 
-const RootLayout: React.FC<WithChildren> = ({ children }) => {
+import type { WithChildren } from '@type/next-page';
+
+import { trpc } from '@lib/trpc';
+
+import Hero from '@components/Hero';
+import Footer from '@components/layout/footer';
+import Header from '@components/layout/header';
+
+const RootLayout: FC<WithChildren> = ({ children }) => {
   return (
     <Fragment>
       <Head>
         <title>Spaceflight Live</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&display=swap"
-          rel="stylesheet"
-        />
         <link
           rel="icon"
           href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>"
@@ -39,10 +35,10 @@ const RootLayout: React.FC<WithChildren> = ({ children }) => {
           rel="dns-prefetch"
           href="https://constellation.spaceflight.live/"
         />
-        <link rel="dns-prefetch" href="https://booster.spaceflight.live/" />
-        <link rel="dns-prefetch" href="https://orbiter.spaceflight.live/" />
       </Head>
-      <div className="root font-inter text-white h-full w-full">{children}</div>
+      <div className="root font-inter text-white h-full w-full flex flex-col">
+        {children}
+      </div>
       <script
         defer
         src="https://static.cloudflareinsights.com/beacon.min.js"
@@ -52,42 +48,36 @@ const RootLayout: React.FC<WithChildren> = ({ children }) => {
   );
 };
 
-const Layout: React.FC<WithChildren> = ({ children }) => {
+const Layout: FC<WithChildren> = ({ children }) => {
   return (
     <Fragment>
       <Header />
-      <div className="mx-auto container text-black">{children}</div>
+      {children}
       <Footer />
     </Fragment>
   );
 };
 
-const LayoutWithHero: React.FC<PropsWithChildren<any>> = ({ children }) => {
+const LayoutWithHero: FC<WithChildren> = ({ children }) => {
   const { data } = trpc.useInfiniteQuery([
-    'launches.getUpcoming',
-    { limit: 5 },
+    'launches.getLaunches',
+    { limit: 5, filters: ['net >= NOW()', 'status != TBD'].join(',') },
   ]);
 
   return (
     <Fragment>
-      <div className="h-full flex flex-col">
+      <div className="min-h-full flex flex-col flex-1">
         {data && data.pages && (
           <Hero
-            launchId={data.pages[0].launches[0].id}
+            launchId={data.pages[0].launches[0]}
             darker={false}
             next={true}
           />
         )}
-        {children.props?.heroOnly ? <></> : <Header />}
+        <Header />
       </div>
-      {children.props?.heroOnly ? (
-        <></>
-      ) : (
-        <>
-          <div className="mx-auto text-black">{children}</div>
-          <Footer />
-        </>
-      )}
+      {children}
+      <Footer />
     </Fragment>
   );
 };
@@ -97,5 +87,6 @@ export const getRootLayout = (page: JSX.Element): JSX.Element => (
 );
 export const getDefaultLayout = (page: JSX.Element): JSX.Element =>
   getRootLayout(<Layout>{page}</Layout>);
-export const getLayoutWithHero = (page: NextPage): JSX.Element =>
+
+export const getLayoutWithHero = (page: JSX.Element): JSX.Element =>
   getRootLayout(<LayoutWithHero>{page}</LayoutWithHero>);

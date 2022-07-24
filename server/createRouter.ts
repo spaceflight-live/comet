@@ -1,4 +1,8 @@
-import * as trpc from '@trpc/server';
-import { Context } from 'server/context';
+import { OpenApiMeta } from 'trpc-openapi';
 
-export const createRouter = trpc.router<Context>;
+import { Context } from '@server/createContext';
+import { router } from '@trpc/server';
+
+export function createRouter() {
+  return router<Context, OpenApiMeta>();
+}

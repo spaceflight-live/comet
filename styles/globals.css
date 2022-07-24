@@ -2,11 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body, #__next {
-  height: 100%;
-  width: 100%;
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  }
 }
 
-.text-shadow {
-  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+@layer base {
+  html,
+  body,
+  #__next {
+    @apply bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-100 h-full;
+  }
 }

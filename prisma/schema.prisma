@@ -7,6 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+generator zod {
+  provider = "zod-prisma"
+  output   = "../lib/zod"
+}
+
 model Agency {
   id                  String              @id @db.VarChar(11)
   tsd_id              Int                 @unique(map: "agencies_tsd_id")
@@ -249,22 +254,22 @@ enum AgencyType {
 
 enum AstronautStatus {
   Deceased
-  Lost_In_Training              @map("Lost In Training")
+  Lost_In_Training             @map("Lost In Training")
   Retired
-  Lost_In_Flight                @map("Lost In Flight")
-  Died_While_In_Active_Service  @map("Died While In Active Service")
+  Lost_In_Flight               @map("Lost In Flight")
+  Died_While_In_Active_Service @map("Died While In Active Service")
   Active
   Dismissed
-  In_Training                   @map("In-Training")
+  In_Training                  @map("In-Training")
 }
 
 enum AstronautType {
   Government
-  Non_Astronaut_Passenger  @map("Non-Astronaut Passenger")
-  Payload_Specialist       @map("Payload Specialist")
+  Non_Astronaut_Passenger @map("Non-Astronaut Passenger")
+  Payload_Specialist      @map("Payload Specialist")
   Private
   Commercial
-  Non_Human                @map("Non-Human")
+  Non_Human               @map("Non-Human")
   Unknown
 }
 
@@ -279,7 +284,7 @@ enum Country {
   PRK
   KOR
   ISR
-  EMPTY_ENUM_VALUE  @map("")
+  EMPTY_ENUM_VALUE @map("")
   KAZ
   NZL
   GUF
@@ -327,33 +332,33 @@ enum LandingLocationType {
 enum LaunchStatus {
   Success
   Failure
-  Partial_Failure  @map("Partial Failure")
+  Partial_Failure @map("Partial Failure")
   TBD
   TBC
   Go
-  In_Flight        @map("In Flight")
+  In_Flight       @map("In Flight")
   Hold
 }
 
 enum LaunchType {
-  Human_Exploration      @map("Human Exploration")
-  Test_Flight            @map("Test Flight")
+  Human_Exploration     @map("Human Exploration")
+  Test_Flight           @map("Test Flight")
   Heliophysics
-  Planetary_Science      @map("Planetary Science")
-  Robotic_Exploration    @map("Robotic Exploration")
+  Planetary_Science     @map("Planetary Science")
+  Robotic_Exploration   @map("Robotic Exploration")
   Communications
-  Earth_Science          @map("Earth Science")
-  Government_Top_Secret  @map("Government/Top Secret")
+  Earth_Science         @map("Earth Science")
+  Government_Top_Secret @map("Government/Top Secret")
   Astrophysics
   Unknown
-  Dedicated_Rideshare    @map("Dedicated Rideshare")
+  Dedicated_Rideshare   @map("Dedicated Rideshare")
   Navigation
   Resupply
   Suborbital
   Tourism
-  Lunar_Exploration      @map("Lunar Exploration")
-  Test_Target            @map("Test Target")
-  Materials_Science      @map("Materials Science")
+  Lunar_Exploration     @map("Lunar Exploration")
+  Test_Target           @map("Test Target")
+  Materials_Science     @map("Materials Science")
   Biology
   Technology
 }
@@ -375,10 +380,10 @@ enum Nationality {
   Romanian
   French
   Indian
-  Australian_American  @map("Australian-American")
+  Australian_American @map("Australian-American")
   Canadian
-  Dutch_American       @map("Dutch-American")
-  Saudi_Arabian        @map("Saudi Arabian")
+  Dutch_American      @map("Dutch-American")
+  Saudi_Arabian       @map("Saudi Arabian")
   Dutch
   Mexican
   Syrian
@@ -388,12 +393,12 @@ enum Nationality {
   Kazakhstani
   Austrian
   Belgian
-  American_Vietnamese  @map("American Vietnamese")
+  American_Vietnamese @map("American Vietnamese")
   Swiss
   Italian
   Kyrgyzstan
   Slovak
-  South_African        @map("South African")
+  South_African       @map("South African")
   Israeli
   Spanish
   Ukraine
@@ -401,21 +406,21 @@ enum Nationality {
   Brazilian
   Iranian
   Malaysian
-  South_Korean         @map("South Korean")
+  South_Korean        @map("South Korean")
   Swedish
   Danish
   Earthling
   Emirati
   Scottish
-  Scottish_American    @map("Scottish-American")
+  Scottish_American   @map("Scottish-American")
 }
 
 enum NotamAirspace {
-  SPACE_FLT_OPS          @map("SPACE FLT OPS")
-  SPACE_OPS_AREA         @map("SPACE OPS AREA")
-  SPACE_OPERATIONS_AREA  @map("SPACE OPERATIONS AREA")
-  ROCKET_LAUNCH          @map("ROCKET LAUNCH")
-  SPACECRAFT_RECOVERY    @map("SPACECRAFT RECOVERY")
+  SPACE_FLT_OPS         @map("SPACE FLT OPS")
+  SPACE_OPS_AREA        @map("SPACE OPS AREA")
+  SPACE_OPERATIONS_AREA @map("SPACE OPERATIONS AREA")
+  ROCKET_LAUNCH         @map("ROCKET LAUNCH")
+  SPACECRAFT_RECOVERY   @map("SPACECRAFT RECOVERY")
 }
 
 enum NotamStatus {
@@ -430,8 +435,8 @@ enum Orbit {
   Sub
   Elliptical
   HEO
-  Helio_N_A       @map("Helio-N/A")
-  Solar_Esc       @map("Solar Esc.")
+  Helio_N_A      @map("Helio-N/A")
+  Solar_Esc      @map("Solar Esc.")
   LO
   GTO
   SSO
@@ -439,57 +444,57 @@ enum Orbit {
   L2
   GSO
   GSTO
-  L1_point        @map("L1-point")
-  Direct_GEO      @map("Direct-GEO")
+  L1_point       @map("L1-point")
+  Direct_GEO     @map("Direct-GEO")
   PO
-  Super_GTO       @map("Super-GTO")
-  Lunar_Impactor  @map("Lunar Impactor")
-  Lunar_flyby     @map("Lunar flyby")
-  Mars_flyby      @map("Mars flyby")
-  Venus_flyby     @map("Venus flyby")
+  Super_GTO      @map("Super-GTO")
+  Lunar_Impactor @map("Lunar Impactor")
+  Lunar_flyby    @map("Lunar flyby")
+  Mars_flyby     @map("Mars flyby")
+  Venus_flyby    @map("Venus flyby")
   Venus
   Mars
-  Mercury_flyby   @map("Mercury flyby")
+  Mercury_flyby  @map("Mercury flyby")
   Asteroid
-  N_A             @map("N/A")
+  N_A            @map("N/A")
 }
 
 enum SpacecraftCrewRole {
   Pilot
-  Command_Pilot                     @map("Command Pilot")
+  Command_Pilot                    @map("Command Pilot")
   Commander
   Engineer
-  Medical_Doctor                    @map("Medical Doctor")
-  Lunar_Module_Pilot                @map("Lunar Module Pilot")
-  Command_Module_Pilot              @map("Command Module Pilot")
-  Research_Engineer                 @map("Research Engineer")
-  Flight_Engineer                   @map("Flight Engineer")
-  Test_Engineer                     @map("Test Engineer")
-  Research_Cosmonaut                @map("Research Cosmonaut")
-  Science_Pilot                     @map("Science Pilot")
-  Docking_Module_Pilot              @map("Docking Module Pilot")
-  Mission_Specialist                @map("Mission Specialist")
-  Payload_Specialist                @map("Payload Specialist")
-  Research_Doctor                   @map("Research Doctor")
-  Spaceflight_Participant           @map("Spaceflight Participant")
-  Orbital_module_astronaut          @map("Orbital module astronaut")
-  Descent_module_monitor_astronaut  @map("Descent module monitor astronaut")
-  Space_Traveller                   @map("Space Traveller")
-  Anthropomorphic_Test_Device       @map("Anthropomorphic Test Device")
-  Zero_G_Indicator                  @map("Zero-G Indicator")
-  Spacecraft_Commander              @map("Spacecraft Commander")
-  Joint_Operations_Commander        @map("Joint Operations Commander")
-  Flight_Surgeon                    @map("Flight Surgeon")
-  Senior_Pilot                      @map("Senior Pilot")
+  Medical_Doctor                   @map("Medical Doctor")
+  Lunar_Module_Pilot               @map("Lunar Module Pilot")
+  Command_Module_Pilot             @map("Command Module Pilot")
+  Research_Engineer                @map("Research Engineer")
+  Flight_Engineer                  @map("Flight Engineer")
+  Test_Engineer                    @map("Test Engineer")
+  Research_Cosmonaut               @map("Research Cosmonaut")
+  Science_Pilot                    @map("Science Pilot")
+  Docking_Module_Pilot             @map("Docking Module Pilot")
+  Mission_Specialist               @map("Mission Specialist")
+  Payload_Specialist               @map("Payload Specialist")
+  Research_Doctor                  @map("Research Doctor")
+  Spaceflight_Participant          @map("Spaceflight Participant")
+  Orbital_module_astronaut         @map("Orbital module astronaut")
+  Descent_module_monitor_astronaut @map("Descent module monitor astronaut")
+  Space_Traveller                  @map("Space Traveller")
+  Anthropomorphic_Test_Device      @map("Anthropomorphic Test Device")
+  Zero_G_Indicator                 @map("Zero-G Indicator")
+  Spacecraft_Commander             @map("Spacecraft Commander")
+  Joint_Operations_Commander       @map("Joint Operations Commander")
+  Flight_Surgeon                   @map("Flight Surgeon")
+  Senior_Pilot                     @map("Senior Pilot")
   Tourist
   Passenger
   Operator
 }
 
 enum SpacecraftStatus {
-  Single_Use          @map("Single Use")
+  Single_Use         @map("Single Use")
   Destroyed
   Retired
   Active
-  Under_construction  @map("Under construction")
+  Under_construction @map("Under construction")
 }

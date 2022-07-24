@@ -1,5 +1,12 @@
-import '../styles/globals.css';
-import '../styles/globals.css';
+import { AppProps } from 'next/app';
+import superjson from 'superjson';
+import 'tailwindcss/tailwind.css';
+
+import { NextPageWithLayout } from '@type/next-page';
+
+import { getDefaultLayout } from '@components/layout';
+
+import { AppRouter } from '@server/routers/_app';
 import { TRPCClientErrorLike } from '@trpc/client';
 import { httpBatchLink } from '@trpc/client/links/httpBatchLink';
 import { httpLink } from '@trpc/client/links/httpLink';
@@ -7,12 +14,9 @@ import { loggerLink } from '@trpc/client/links/loggerLink';
 import { splitLink } from '@trpc/client/links/splitLink';
 import { withTRPC } from '@trpc/next';
 import { Maybe } from '@trpc/server';
-import { getDefaultLayout } from 'components/layout';
-import { AppProps } from 'next/app';
-import { AppRouter } from 'server/router';
-import superjson from 'superjson';
-import 'tailwindcss/tailwind.css';
-import { NextPageWithLayout } from 'types/next-page';
+
+import '../styles/globals.css';
+import '../styles/globals.css';
 
 interface Props extends AppProps {
   Component: NextPageWithLayout;
@@ -24,7 +28,7 @@ const App = ({ Component, pageProps }: Props) => {
 };
 
 export default withTRPC<AppRouter>({
-  config({ ctx }) {
+  config({}) {
     let url = `/api/trpc`;
     if (typeof window === 'undefined')
       url = `http://localhost:${process.env.PORT ?? 3000}${url}`;
