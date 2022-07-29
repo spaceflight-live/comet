@@ -60,7 +60,7 @@ const Layout: FC<WithChildren> = ({ children }) => {
 
 const LayoutWithHero: FC<WithChildren> = ({ children }) => {
   const { data } = trpc.useInfiniteQuery([
-    'launches.getLaunches',
+    'launches.list',
     { limit: 5, filters: ['net >= NOW()', 'status != TBD'].join(',') },
   ]);
 
@@ -69,7 +69,7 @@ const LayoutWithHero: FC<WithChildren> = ({ children }) => {
       <div className="min-h-full flex flex-col flex-1">
         {data && data.pages && (
           <Hero
-            launchId={data.pages[0].launches[0]}
+            launchId={data.pages[0].launches[0] as string}
             darker={false}
             next={true}
           />

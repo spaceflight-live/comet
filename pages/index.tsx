@@ -13,7 +13,7 @@ const HomePage = () => {
     error,
   } = trpc.useInfiniteQuery(
     [
-      'launches.getLaunches',
+      'launches.list',
       { limit: 5, filters: ['net >= NOW()', 'status != TBD'].join(',') },
     ],
     {
@@ -30,7 +30,8 @@ const HomePage = () => {
       {data?.pages.map((page, pI) =>
         page?.launches.map(
           (launch, lI) =>
-            (pI !== 0 || lI !== 0) && (
+            (pI !== 0 || lI !== 0) &&
+            typeof launch === 'string' && (
               <div className="xl:h-56 h-72" key={launch}>
                 <Hero launchId={launch} next={false} darker={true} />
               </div>

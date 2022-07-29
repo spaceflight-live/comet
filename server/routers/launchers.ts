@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { createFilterZod, whereFilter } from '@lib/filters';
-import { VehicleModel } from '@lib/zod';
+import { LauncherModel } from '@lib/zod';
 
 import { createRouter } from '@server/createRouter';
 import { TRPCError } from '@trpc/server';
@@ -12,27 +12,27 @@ export default createRouter()
       openapi: {
         enabled: true,
         method: 'GET',
-        path: '/vehicles/{id}',
-        summary: 'Get Vehicle by ID',
-        tags: ['Vehicles'],
+        path: '/launchers/{id}',
+        summary: 'Get Launcher by ID',
+        tags: ['Launchers'],
       },
     },
     input: z.object({
       id: z.string(),
     }),
-    output: VehicleModel,
+    output: LauncherModel,
     resolve: async ({ ctx, input: { id } }) => {
-      const vehicle = await ctx.prisma.vehicle.findFirst({
+      const launcher = await ctx.prisma.launcher.findFirst({
         where: { id },
       });
 
-      if (!vehicle)
+      if (!launcher)
         throw new TRPCError({
           code: 'NOT_FOUND',
-          message: `Vehicle not found`,
+          message: `Launcher not found`,
         });
 
-      return vehicle;
+      return launcher;
     },
   })
   .query('list', {
@@ -40,11 +40,13 @@ export default createRouter()
       openapi: {
         enabled: true,
         method: 'GET',
-        path: '/vehicles',
-        summary: 'Get Vehicle IDs',
-        tags: ['Vehicles'],
-        description: `Fields that are filterable \`${['name']}\`
-        `,
+        path: '/launchers',
+        summary: 'Get Launcher IDs',
+        tags: ['Launchers'],
+        description: `Fields that are filterable \`${[
+          'role',
+          'serial_number',
+        ]}\``,
       },
     },
     input: z.object({
@@ -53,31 +55,31 @@ export default createRouter()
         z.number().max(100).min(1).default(20),
       ),
       cursor: z.string().optional(),
-      filters: createFilterZod(['name'] as const),
+      filters: createFilterZod(['role', 'serial_number'] as const),
       extend: z.preprocess(
         (arg) => String(arg) === 'true',
         z.boolean().default(false),
       ),
     }),
     output: z.object({
-      vehicle: z.string().or(VehicleModel).array(),
+      launchers: z.string().or(LauncherModel).array(),
       nextCursor: z.string().nullable(),
     }),
     resolve: async ({ ctx, input: { limit, cursor, filters, extend } }) => {
-      const vehicle = await ctx.prisma.vehicle.findMany({
+      const launchers = await ctx.prisma.launcher.findMany({
         take: (limit ?? 15) + 1,
         cursor: cursor ? { id: cursor } : undefined,
         where: whereFilter(filters),
       });
 
       let nextCursor: string | null = null;
-      if (vehicle.length > (limit ?? 15)) {
-        const nextItem = vehicle.pop();
+      if (launchers.length > (limit ?? 15)) {
+        const nextItem = launchers.pop();
         nextCursor = nextItem?.id || null;
       }
 
       return {
-        vehicle: extend ? vehicle : vehicle.map(({ id }) => id),
+        launchers: extend ? launchers : launchers.map(({ id }) => id),
         nextCursor,
       };
     },

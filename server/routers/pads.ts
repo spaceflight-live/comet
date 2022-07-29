@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { createFilterZod, whereFilter } from '@lib/filters';
-import { VehicleModel } from '@lib/zod';
+import { PadModel, LocationModel } from '@lib/zod';
 
 import { createRouter } from '@server/createRouter';
 import { TRPCError } from '@trpc/server';
@@ -12,27 +12,32 @@ export default createRouter()
       openapi: {
         enabled: true,
         method: 'GET',
-        path: '/vehicles/{id}',
-        summary: 'Get Vehicle by ID',
-        tags: ['Vehicles'],
+        path: '/pads/{id}',
+        summary: 'Get Pad by ID',
+        tags: ['Pad'],
       },
     },
     input: z.object({
       id: z.string(),
     }),
-    output: VehicleModel,
+    output: PadModel.merge(
+      z.object({
+        location: LocationModel.nullable(),
+      }),
+    ),
     resolve: async ({ ctx, input: { id } }) => {
-      const vehicle = await ctx.prisma.vehicle.findFirst({
+      const pad = await ctx.prisma.pad.findFirst({
+        include: { location: true },
         where: { id },
       });
 
-      if (!vehicle)
+      if (!pad)
         throw new TRPCError({
           code: 'NOT_FOUND',
-          message: `Vehicle not found`,
+          message: `Pad not found`,
         });
 
-      return vehicle;
+      return pad;
     },
   })
   .query('list', {
@@ -40,11 +45,10 @@ export default createRouter()
       openapi: {
         enabled: true,
         method: 'GET',
-        path: '/vehicles',
-        summary: 'Get Vehicle IDs',
-        tags: ['Vehicles'],
-        description: `Fields that are filterable \`${['name']}\`
-        `,
+        path: '/pads',
+        summary: 'Get Pad IDs',
+        tags: ['Pad'],
+        description: `Fields that are filterable \`${['name', 'agency_id']}\``,
       },
     },
     input: z.object({
@@ -53,31 +57,41 @@ export default createRouter()
         z.number().max(100).min(1).default(20),
       ),
       cursor: z.string().optional(),
-      filters: createFilterZod(['name'] as const),
+      filters: createFilterZod(['name', 'agency_id'] as const),
       extend: z.preprocess(
         (arg) => String(arg) === 'true',
         z.boolean().default(false),
       ),
     }),
     output: z.object({
-      vehicle: z.string().or(VehicleModel).array(),
+      pads: z
+        .string()
+        .or(
+          PadModel.merge(
+            z.object({
+              location: LocationModel.optional(),
+            }),
+          ),
+        )
+        .array(),
       nextCursor: z.string().nullable(),
     }),
     resolve: async ({ ctx, input: { limit, cursor, filters, extend } }) => {
-      const vehicle = await ctx.prisma.vehicle.findMany({
+      const pads = await ctx.prisma.pad.findMany({
+        include: extend ? { location: true } : undefined,
         take: (limit ?? 15) + 1,
         cursor: cursor ? { id: cursor } : undefined,
         where: whereFilter(filters),
       });
 
       let nextCursor: string | null = null;
-      if (vehicle.length > (limit ?? 15)) {
-        const nextItem = vehicle.pop();
+      if (pads.length > (limit ?? 15)) {
+        const nextItem = pads.pop();
         nextCursor = nextItem?.id || null;
       }
 
       return {
-        vehicle: extend ? vehicle : vehicle.map(({ id }) => id),
+        pads: extend ? pads : pads.map(({ id }) => id),
         nextCursor,
       };
     },

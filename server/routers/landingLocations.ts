@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { createFilterZod, whereFilter } from '@lib/filters';
-import { VehicleModel } from '@lib/zod';
+import { LandingLocationModel } from '@lib/zod';
 
 import { createRouter } from '@server/createRouter';
 import { TRPCError } from '@trpc/server';
@@ -12,27 +12,27 @@ export default createRouter()
       openapi: {
         enabled: true,
         method: 'GET',
-        path: '/vehicles/{id}',
-        summary: 'Get Vehicle by ID',
-        tags: ['Vehicles'],
+        path: '/landing-locations/{id}',
+        summary: 'Get LandingLocation by ID',
+        tags: ['Landing Locations'],
       },
     },
     input: z.object({
       id: z.string(),
     }),
-    output: VehicleModel,
+    output: LandingLocationModel,
     resolve: async ({ ctx, input: { id } }) => {
-      const vehicle = await ctx.prisma.vehicle.findFirst({
+      const landingLocation = await ctx.prisma.landingLocation.findFirst({
         where: { id },
       });
 
-      if (!vehicle)
+      if (!landingLocation)
         throw new TRPCError({
           code: 'NOT_FOUND',
-          message: `Vehicle not found`,
+          message: `LandingLocation not found`,
         });
 
-      return vehicle;
+      return landingLocation;
     },
   })
   .query('list', {
@@ -40,10 +40,15 @@ export default createRouter()
       openapi: {
         enabled: true,
         method: 'GET',
-        path: '/vehicles',
-        summary: 'Get Vehicle IDs',
-        tags: ['Vehicles'],
-        description: `Fields that are filterable \`${['name']}\`
+        path: '/landing-locations',
+        summary: 'Get LandingLocation IDs',
+        tags: ['Landing Locations'],
+        description: `Fields that are filterable \`${[
+          'name',
+          'abbrev',
+          'type',
+          'location_id',
+        ]}\`
         `,
       },
     },
@@ -53,31 +58,38 @@ export default createRouter()
         z.number().max(100).min(1).default(20),
       ),
       cursor: z.string().optional(),
-      filters: createFilterZod(['name'] as const),
+      filters: createFilterZod([
+        'name',
+        'abbrev',
+        'type',
+        'location_id',
+      ] as const),
       extend: z.preprocess(
         (arg) => String(arg) === 'true',
         z.boolean().default(false),
       ),
     }),
     output: z.object({
-      vehicle: z.string().or(VehicleModel).array(),
+      landingLocations: z.string().or(LandingLocationModel).array(),
       nextCursor: z.string().nullable(),
     }),
     resolve: async ({ ctx, input: { limit, cursor, filters, extend } }) => {
-      const vehicle = await ctx.prisma.vehicle.findMany({
+      const landingLocations = await ctx.prisma.landingLocation.findMany({
         take: (limit ?? 15) + 1,
         cursor: cursor ? { id: cursor } : undefined,
         where: whereFilter(filters),
       });
 
       let nextCursor: string | null = null;
-      if (vehicle.length > (limit ?? 15)) {
-        const nextItem = vehicle.pop();
+      if (landingLocations.length > (limit ?? 15)) {
+        const nextItem = landingLocations.pop();
         nextCursor = nextItem?.id || null;
       }
 
       return {
-        vehicle: extend ? vehicle : vehicle.map(({ id }) => id),
+        landingLocations: extend
+          ? landingLocations
+          : landingLocations.map(({ id }) => id),
         nextCursor,
       };
     },
